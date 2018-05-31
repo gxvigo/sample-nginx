@@ -13,7 +13,7 @@ $ sudo chmod 777 -R /aStorage/
 and create a simple html page
 
 ```
-$ echo "<html><body>Hello IBM Cloud private.</body></html>" > /aStorage/nginx/index1.html
+$ echo "<html><body><h1>Blue is awesome!</h1></body></html>" > /aStorage/nginx/index1.html
 ```
 
 
