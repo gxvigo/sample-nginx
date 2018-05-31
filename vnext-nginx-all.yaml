@@ -1,0 +1,68 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: vnext-nginx-persistentvolume
+  resourceVersion: '63509'
+  finalizers:
+  - kubernetes.io/pv-protection
+spec:
+  capacity:
+    storage: 10Mi
+  hostPath:
+    path: "/aStorage/nginx-vnext"
+    type: ''
+  accessModes:
+  - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: vnext-nginx-persistentvolumeclaim
+  namespace: default
+spec:
+  resources:
+    requests:
+      storage: 10Mi
+  accessModes:
+  - ReadWriteMany
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vnext-nginx-deployment
+  labels:
+    app: vnext-nginx-deployment 
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-pod
+      version: "2"
+  template:
+    metadata:
+      labels:
+        app: nginx-pod
+        version: "2"
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.13.1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        ports:
+          - containerPort: 80
+        volumeMounts:
+        - mountPath: "/usr/share/nginx/html"
+          name: nginxvol
+      volumes:
+        - name: nginxvol
+          persistentVolumeClaim:
+            claimName: vnext-nginx-persistentvolumeclaim             
