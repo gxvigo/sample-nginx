@@ -25,7 +25,7 @@ To deploy the application to a kubernetes cluster run the command below.
 All resource files are listed and explained at the end of this file.
 
 ``` 
-kubectl create -f .\nginx-all.yaml
+kubectl create -f ./blue-deployment/nginx-all.yaml
 ```
 
 It create all the resources necessary to run the application.
@@ -58,15 +58,15 @@ $ echo "<html><body><h1>...but Green is better></h1></body></html>" > /aStorage/
 Create a second deployment with a different persistent volume and persistent volume claim (does NOT create a different Service)
 
 ```
-kubectl create -f vnext-nginx-all.yaml
+kubectl create -f ./green-deployment/vnext-nginx-all.yaml
 ```
 
-At this stage 3 new Pods are running. This Pods have the same label name (nginx-pod) but a different label version number (2)
+At this stage, 3 new Pods are running. These Pods have the same label name (nginx-pod) but a different label version number (2)
 
-To switch the workload to the new version, apply the modified Service (same object created at the beginning with a different Selector)
+To switch the workload to the new version (new set of Pods), apply the modified Service (same object created at the beginning with a different Selector)
 
 ```
-kubectl apply -f .\vnext-nginx-service.yaml
+kubectl apply -f ./green-deployment/vnext-nginx-service.yaml
 ```
 
 Reload the browser (or open an incognito window to avoid caching), the new html is displayed.
@@ -77,20 +77,20 @@ Reload the browser (or open an incognito window to avoid caching), the new html 
 To run the first deployment and the BlueGreen deployment 4 script files have been created. Run sequentially:
 
 ```
-01_nginx-create-all.sh   Create Blue deployment
+01_nginx-create-all.sh   Create Blue deployment and Service
 ```
 Test in the browser
 
 ```
-02_vnext-nginx-create-all.sh
+02_vnext-nginx-create-all.sh   Create Green deployment
 ```
 ```
-03_vnext-nginx-switch-to-green.sh
+03_vnext-nginx-switch-to-green.sh    Switch Service to new Pods
 ```
 Test in the browser
 
 ```
-04_nginx-cleanup-bluegreen.sh
+04_nginx-cleanup-bluegreen.sh     Remove all the resources previously created
 ```
 
 ---
